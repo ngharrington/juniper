@@ -14,7 +14,7 @@ var (
 
 type JournalEntry struct {
 	Id       uint
-	Contents []byte
+	Contents string
 }
 
 func (e JournalEntry) String() string {
@@ -73,7 +73,7 @@ type JournalEntryFileStore struct {
 
 func (s *JournalEntryFileStore) Save(j JournalEntry) (JournalEntry, error) {
 	filename := fmt.Sprintf("%d.txt", j.Id)
-	err := os.WriteFile(filename, j.Contents, 640)
+	err := os.WriteFile(filename, []byte(j.Contents), 640)
 	if err != nil {
 		err = errors.Wrap(ErrorSavingJournalEntry, err.Error())
 	}
@@ -84,7 +84,7 @@ func GetJournalEntryStore(mode string) JournalEntryStore {
 	var j JournalEntryStore
 	switch mode {
 	case "memory":
-		j = &JournalEntryMemoryStore{}
+		j = &JournalEntryMemoryStore{entries: make([]JournalEntry, 0)}
 		// case "file":
 		// 	j = &JournalEntryFileStore{filepath: "./data"}
 	}

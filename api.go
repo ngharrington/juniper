@@ -1,11 +1,14 @@
 package main
 
+import "fmt"
+
 type JournalApi struct {
 	store JournalEntryStore
 }
 
-func (a JournalApi) CreateJournalEntry(content []byte) (JournalEntry, error) {
+func (a JournalApi) CreateJournalEntry(content string) (JournalEntry, error) {
 	entry := JournalEntry{Contents: content}
+	fmt.Println(entry)
 	j, err := a.store.Save(entry)
 	return j, err
 }

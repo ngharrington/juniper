@@ -14,10 +14,6 @@ type Server struct {
 	Router  *mux.Router
 }
 
-func handleHome(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello, world")
-}
-
 type RequestLogger struct {
 	handler http.Handler
 }
@@ -36,7 +32,11 @@ func NewRequestLogger(handlerToWrap http.Handler) *RequestLogger {
 
 func NewServer() *Server {
 	router := mux.NewRouter()
-	service := NewService(router)
+	store := GetJournalEntryStore("memory")
+	api := &JournalApi{
+		store: store,
+	}
+	service := NewService(router, api)
 	return &Server{
 		Service: service,
 		Router:  router,
